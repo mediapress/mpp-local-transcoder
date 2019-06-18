@@ -1,0 +1,16 @@
+table.queue_items strong, table.log_items strong {
+    padding: 5px;
+    color: #fff;
+}
+strong.mpplt-queued {
+    background-color: dimgrey;
+}
+strong.mpplt-processing {
+    background-color: darkgreen;
+}
+strong.mpplt-completed {
+    background-color: darkgreen;
+}
+strong.mpplt-error {
+    background-color: darkred;
+}
