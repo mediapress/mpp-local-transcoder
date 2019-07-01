@@ -42,6 +42,7 @@ class Queue_Items_Table extends \WP_List_Table {
 			'singular' => 'queue_item',
 			'plural'   => 'queue_items',
 			'ajax'     => true,
+			'screen'   => 'mpplt_queue_items',
 		);
 
 		parent::__construct( $parent_args );

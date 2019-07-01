@@ -41,6 +41,7 @@ class Log_Items_Table extends \WP_List_Table {
 			'singular' => 'log_item',
 			'plural'   => 'log_items',
 			'ajax'     => true,
+			'screen'   => 'mpplt_log_items',
 		);
 
 		parent::__construct( $parent_args );
