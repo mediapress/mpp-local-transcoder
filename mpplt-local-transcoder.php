@@ -3,7 +3,7 @@
  * Plugin Name:  MediaPress Local Transcoder
  * Plugin URI: https://buddydev.com/plugins/mpp-local-transcoder/
  * Description: Local transcoder using ffmpeg. This is not recommended for high traffic site.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: BuddyDev
  * Author URI: https://buddydev.com
  */
@@ -38,7 +38,7 @@ class MPPLT_Local_Transcoder {
 	 *
 	 * @var string
 	 */
-	private $version = '1.0.0';
+	private $version = '1.0.1';
 
 	/**
 	 * Singleton instance
