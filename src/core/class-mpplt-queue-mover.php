@@ -121,6 +121,10 @@ class MPPLT_Queue_Mover {
 					'compare' => 'EXISTS',
 				),
 				array(
+					'key'     => '_mpp_is_remote',
+					'compare' => 'NOT EXISTS',
+				),
+				array(
 					'key'     => '_mpplt_encoded',
 					'compare' => 'NOT EXISTS',
 				),
