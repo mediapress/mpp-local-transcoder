@@ -147,22 +147,6 @@ class MPPLT_Action_Handler {
 	}
 
 	/**
-	 * Check if media needs filtered view or not
-	 *
-	 * @param int $media_id Media id.
-	 *
-	 * @return bool
-	 */
-	private function needs_filtered_view( $media_id ) {
-
-		if ( mpp_get_media_meta( $media_id, '_mpplt_media_queued', true ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Get media src
 	 *
 	 * @param \MPP_Media_View $view  View object.
@@ -171,8 +155,13 @@ class MPPLT_Action_Handler {
 	 * @return string
 	 */
 	public function filter_media_view( $view, $media ) {
+
+		if ( 'video' != $media->type ) {
+			return $view;
+		}
+
 		// Make sure file is in encoding process.
-		if ( $this->needs_filtered_view( $media->id ) ) {
+		if ( mpplt_media_in_queue( $media->id ) ) {
 			$view = new MPPLT_Media_View();
 		}
 
@@ -188,19 +177,12 @@ class MPPLT_Action_Handler {
 	 * @return MPP_Gallery_View
 	 */
 	public function filter_gallery_view( $view, $gallery ) {
-		$media_ids = mpp_get_all_media_ids( array( 'gallery_id' => $gallery->id ) );
 
-		if ( empty( $media_ids ) ) {
+		if ( 'video' != $gallery->type ) {
 			return $view;
 		}
 
-		foreach ( $media_ids as $media_id ) {
-			if ( $this->needs_filtered_view( $media_id ) ) {
-				$view = new MPPLT_Media_View();
-			}
-		}
-
-		return $view;
+		return new MPPLT_Gallery_View( $view );
 	}
 
 	/**

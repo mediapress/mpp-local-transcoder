@@ -119,3 +119,19 @@ function mpplt_redirect( $url ) {
 	wp_safe_redirect( $url );
 	exit( 0 );
 }
+
+/**
+ * Media is in queue or not
+ *
+ * @param int $media_id Media id.
+ *
+ * @return bool
+ */
+function mpplt_media_in_queue( $media_id ) {
+
+	if ( mpp_get_media_meta( $media_id, '_mpplt_media_queued', true ) ) {
+		return true;
+	}
+
+	return false;
+}

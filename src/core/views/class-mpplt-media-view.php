@@ -24,14 +24,6 @@ class MPPLT_Media_View extends \MPP_Media_View {
 	 * @param \MPP_Media $media media object.
 	 */
 	public function display( $media ) {
-		// if we are here, all attached media are not viewable by the user.
-		// In this case, we show a media not available message.
-		$templates = array( 'transcoder/media-under-conversion.php' );
-
-		$located_template = mpp_locate_template( $templates, false, mpplt_local_transcoder()->path . 'templates/' );
-
-		if ( $located_template ) {
-			include $located_template;
-		}
+		mpp_get_template( 'gallery/media/views/photo.php', array(), mpplt_local_transcoder()->path . 'templates/' );
 	}
 }

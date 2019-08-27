@@ -45,7 +45,13 @@ class MPPLT_Gallery_View extends \MPP_Gallery_View {
 	 * @param \MPP_Gallery $gallery gallery object.
 	 */
 	public function display( $gallery ) {
-		$this->old_view->display( $gallery );
+		//$this->old_view->display( $gallery );
+
+		$templates = array(
+			"gallery/views/grid-video.php", // grid-audio.php etc .
+		);
+
+		mpp_locate_template( $templates, true, mpplt_local_transcoder()->path . 'templates/' );
 	}
 
 	/**
@@ -62,48 +68,23 @@ class MPPLT_Gallery_View extends \MPP_Gallery_View {
 			return;
 		}
 
-		$activity_id = empty( $activity_id ) ? bp_get_activity_id() : $activity_id;
+		$media = $media_ids[0];
 
-		// Filter the media which are in moderation.
-		$filtered_ids = $this->get_filtered_ids( $media_ids );
+		$media = mpp_get_media( $media );
 
-		// If there are still some media that can be seen by the current user, let us delegate the view.
-		if ( ! empty( $filtered_ids ) ) {
-			$this->old_view->activity_display( $filtered_ids, $activity_id );
-
+		if ( ! $media ) {
 			return;
 		}
 
-		// if we are here, all attached media are not viewable by the user.
-		// In this case, we show a media not available message.
-		$templates = array( 'transcoder/media-under-conversion.php' );
+		$type = $media->type;
+		// we will use include to load found template file,
+		// the file will have $media_ids available.
+		$templates = array(
+			"buddypress/activity/views/grid-{$type}.php", // loop-audio.php etc.
+		);
 
-		$located_template = mpp_locate_template( $templates, false, mpp_local_storage()->get_path() . 'templates' );
+		$located_template = mpp_locate_template( $templates, false, mpplt_local_transcoder()->path . 'templates/' );
 
-		if ( $located_template ) {
-			include $located_template;
-		}
-	}
-
-	/**
-	 * Get filtered media ids(array after removing hidden media).
-	 *
-	 * @param array $media_ids media ids.
-	 *
-	 * @return array
-	 */
-	private function get_filtered_ids( $media_ids ) {
-		// if we are here, we need to filter the media list right?
-		$filtered_ids = array();
-		foreach ( $media_ids as $media_id ) {
-
-			if ( mpp_get_media_meta( $media_id, '_mpplt_converting_file_original', true ) ) {
-				continue;
-			}
-
-			$filtered_ids[] = $media_id;
-		}
-
-		return $filtered_ids;
+		include $located_template;
 	}
 }

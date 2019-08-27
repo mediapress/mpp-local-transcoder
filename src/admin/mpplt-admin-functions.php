@@ -22,10 +22,10 @@ function mpplt_admin_notice() {
 		return;
 	}
 
-	$type = isset( $_GET['message-type'] ) ? trim( $_GET['message-type'] ) : 'fade';
+	$type = isset( $_GET['message_type'] ) ? trim( $_GET['message_type'] ) : 'fade';
 	?>
     <div class="updated <?php echo esc_attr( $type ); ?>">
-        <p><?php echo wp_kses_data( $_GET['message'] ); ?></p>
+        <p><?php echo esc_html( $_GET['message'] ); ?></p>
     </div>
 	<?php
 	// phpcs:enable
