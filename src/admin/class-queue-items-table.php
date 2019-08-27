@@ -112,7 +112,11 @@ class Queue_Items_Table extends \WP_List_Table {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		return array();
+		$bulk_actions = array(
+			'delete' => __( 'Delete', 'mpp-local-transcoder' ),
+		);
+
+		return $bulk_actions;
 	}
 
 	/**
@@ -122,6 +126,7 @@ class Queue_Items_Table extends \WP_List_Table {
 	 */
 	public function get_columns() {
 		return array(
+			'cb'         => '<input type="checkbox" />',
 			'thumbnail'  => __( 'Thumbnail', 'mpp-local-transcoder' ),
 			'media_id'   => __( 'Media ID', 'mpp-local-transcoder' ),
 			'queue_type' => __( 'Queue type', 'mpp-local-transcoder' ),
@@ -142,6 +147,17 @@ class Queue_Items_Table extends \WP_List_Table {
 		);
 
 		return $sortable_columns;
+	}
+
+	/**
+	 * Checkbox column
+	 *
+	 * @param mixed $item Current Queue item.
+	 *
+	 * @return string
+	 */
+	public function column_cb( $item ) {
+		return sprintf( '<input type="checkbox" name="id[]" value="%d" />', $item->id );
 	}
 
 	/**

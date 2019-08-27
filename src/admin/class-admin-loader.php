@@ -192,11 +192,12 @@ class Admin_Loader {
 		switch ( $slug ) {
 			case 'mpplt-queue':
 			default:
+			    $this->process_queue_bulk_action();
 				$this->handle_queue();
 				break;
 
 			case 'mpplt-log':
-				$this->process_bulk_action();
+				$this->process_log_bulk_action();
 				$this->handle_log();
 				break;
 		}
@@ -357,7 +358,55 @@ class Admin_Loader {
 	/**
 	 * Process bulk actions
 	 */
-	public function process_bulk_action() {
+	public function process_queue_bulk_action() {
+		$table = new Queue_Items_Table();
+
+		if ( 'delete' !== $table->current_action() ) {
+			return;
+		}
+		// In our file that handles the request, verify the nonce.
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-queue_items' ) ) {
+			die( esc_html__( 'Invalid action', 'mpp-local-transcoder' ) );
+		}
+
+		$ids = empty( $_GET['id'] ) ? array() : wp_parse_id_list( $_GET['id'] );
+
+		foreach ( $ids as $id ) {
+		    $queue = Queue::find( $id );
+
+		    if ( MPPLT_Process::is_running( $queue->process_id ) ) {
+		        MPPLT_Process::kill( $queue->process_id );
+            }
+        }
+
+		$deleted = Queue::destroy(
+			array(
+				'id' => array(
+					'op'    => 'IN',
+					'value' => $ids,
+				),
+			)
+		);
+
+		if ( ! $deleted ) {
+			$args = array(
+				'message_type' => 'error',
+				'message'      => __( 'Something went wrong', 'mpp-local-transcoder' ),
+			);
+		} else {
+			$args = array(
+				'message_type' => 'success',
+				'message'      => __( 'Items deleted!', 'mpp-local-transcoder' ),
+			);
+		}
+
+		mpplt_redirect( mpplt_admin_get_queue_url( $args ) );
+	}
+
+	/**
+	 * Process bulk actions
+	 */
+	public function process_log_bulk_action() {
 		$table = new Log_Items_Table();
 
 		if ( 'delete' !== $table->current_action() ) {
