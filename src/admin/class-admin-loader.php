@@ -236,7 +236,7 @@ class Admin_Loader {
 				break;
 
 			case 'mpplt-bulk-process':
-				$this->render_bulk_process();
+				$this->render_bulk_process_screen();
 				break;
 
 			default:
@@ -273,7 +273,7 @@ class Admin_Loader {
 	/**
 	 * Render bulk process screen
 	 */
-	private function render_bulk_process() {
+	private function render_bulk_process_screen() {
 		require_once dirname( __FILE__ ) . '/templates/bulk-process.php';
 	}
 
@@ -333,14 +333,9 @@ class Admin_Loader {
 			mpp_delete_media_meta( $queue->media_id, '_mpplt_preview_generated' );
 		}
 
-		$add = mpplt_add_item(
-			array(
-				'media_id'   => $queue->media_id,
-				'queue_type' => $queue->queue_type,
-			)
-		);
+		$queue->status = 'queued';
 
-		if ( ! $add ) {
+		if ( ! $queue->save() ) {
 			$args = array(
 				'message_type' => 'error',
 				'message'      => __( 'No able to add item to queue', 'mpp-local-transcoder' ),
